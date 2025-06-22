@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Amigo do Gleidson na TP</title>
+  <style>
+    /* estilos similares ao modelo da Teleperformance */
+    body { font-family: Arial,sans-serif; background: #f5f7fa; padding: 20px; }
+    .container { background: white; max-width:600px; margin:auto; padding:30px; border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    h1 { color:#005eb8; }
+    label { display:block; margin-top:15px; font-weight:bold; }
+    input, select { width:100%; padding:10px; margin-top:5px; border-radius:5px; border:1px solid #ccc; }
+    .inline { display:flex; gap:10px; margin-top:5px; }
+    .inline label { font-weight:normal; }
+    .btn { margin-top:20px; padding:15px; width:100%; background:#005eb8; color:white; border:none; border-radius:5px; font-size:16px; cursor:pointer; }
+    .btn:hover { background:#004a9f; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Amigo do Gleidson na TP</h1>
+    <form id="form">
+      <label>CPF:</label>
+      <input type="text" name="cpf" required>
+
+      <label>Nome Completo:</label>
+      <input type="text" name="nome_completo" required>
+
+      <label>Nome Social:</label>
+      <input type="text" name="nome_social">
+
+      <label>E‑mail:</label>
+      <input type="email" name="email" required>
+
+      <label>Telefone:</label>
+      <input type="tel" name="telefone" required>
+
+      <label>Tipo de Vaga:</label>
+      <div class="inline">
+        <label><input type="radio" name="tipo_vaga" value="Expert" required> Expert</label>
+        <label><input type="radio" name="tipo_vaga" value="Staff"> Staff</label>
+      </div>
+
+      <label><input type="checkbox" name="pcd"> Candidato é PCD?</label>
+      <label><input type="checkbox" name="home_office"> Apenas trabalho de casa?</label>
+
+      <label>Idiomas (selecione e adicione):</label>
+      <div id="idiomas-container"></div>
+      <button type="button" onclick="addIdioma()">Adicionar Idioma</button>
+
+      <label><input type="checkbox" name="parentesco"> É parente?</label>
+
+      <button type="submit" class="btn">Enviar Indicação</button>
+    </form>
+  </div>
+
+  <script>
+    const scriptURL = "https://github.com/gleidsonfabiano/seuamigo/blob/main/Script.js";
+
+    // adicionar idiomas
+    function addIdioma() {
+      const div = document.createElement("div");
+      div.innerHTML = `<select><option>Português</option><option>Inglês</option><option>Espanhol</option></select>`;
+      document.getElementById("idiomas-container").append(div);
+    }
+
+    document.getElementById("form").addEventListener("submit", e => {
+      e.preventDefault();
+      const form = e.target;
+      let data = new FormData(form);
+      const idiomas = Array.from(document.querySelectorAll("#idiomas-container select")).map(s=>s.value);
+      data.delete(''); // ensure clean
+      data.append("idiomas", JSON.stringify(idiomas));
+
+      fetch(scriptURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+      }).finally(() => {
+        window.location.href = "https://seuamigonatp.teleperformance.com.br/SeuAmigoNaTP";
+      });
+    });
+  </script>
+</body>
+</html>
